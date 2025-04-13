@@ -33,3 +33,4 @@ async function proxy(req, res) {
 app.get("/locations/api/themes/:id", proxy)
 app.get("/locations/api/themes", proxy)
 app.get("/locations/api/entities/:id", proxy)
+app.use(express.static("static/"))
