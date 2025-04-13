@@ -1,0 +1,23 @@
+{
+  "name": "hci_project",
+  "version": "1.0.0",
+  "description": "HCI project for our class",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/awsomearvinder/hci-project.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/awsomearvinder/hci-project/issues"
+  },
+  "homepage": "https://github.com/awsomearvinder/hci-project#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
