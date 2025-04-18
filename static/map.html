@@ -3,8 +3,15 @@
 
 <head>
     <title>Map</title>
-    <!-- Leaflet CSS -->
+    <!-- arboretum CSS, we'll need to cite these-->
+    <link rel="stylesheet" href="https://www2.winona.edu/m/arboretum/resources/site.css" />
+    <link rel="stylesheet" href="https://www2.winona.edu/m/arboretum/resources/wsu-mobile.css" />
+    <link rel="stylesheet" href="//ajax.aspnetcdn.com/ajax/jquery.mobile/1.3.0/jquery.mobile.structure-1.3.0.min.css">
+    <link id="sa-css" rel="stylesheet" type="text/css" href="https://tags.srv.stackadapt.com/sa.css" media="all">
+    <!-- Leaflet CSS, also site this too-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+
     <style>
         html,
         body {
@@ -20,7 +27,10 @@
 </head>
 
 <body>
-
+    <div data-role="header" id="header" class="ui-header ui-bar-a" role="banner"> 
+        <a href="#leftpanel" data-role="button" data-icon="bars" data-inline="true" data-mini="true" data-iconpos="notext" data-iconshadow="false" class="ui-btn-left ui-btn ui-btn-up-a ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-icon-notext" data-corners="true" data-shadow="true" data-wrapperels="span" data-theme="a" title="Navigation Panel"><span class="ui-btn-inner"><span class="ui-btn-text">Navigation Panel</span><span class="ui-icon ui-icon-bars">&nbsp;</span></span></a>
+        <h1 class="ui-title" role="heading" aria-level="1">Tour Map</h1>
+    </div>
     <!--Used the leaflet quickstart to get a basic map working https://leafletjs.com/examples/quick-start/-->
     <div id="map"></div>
 
