@@ -37,6 +37,48 @@
       #map {
         height: 100%;
       }
+
+      #leftpanel {
+        position: absolute;
+        top: 0;
+        left: -250px;
+        width: 250px;
+        height: 100%;
+        background-color: #f4f4f4;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+        overflow-y: auto;
+        z-index: 9999;
+        transition: left 0.3s ease-in-out;
+      }
+
+      #leftpanel.open {
+        left: 0;
+      }
+
+      #leftpanel .close-btn {
+        display: block;
+        padding: 10px;
+        background-color: #3B1183;
+        color: white;
+        text-align: center;
+        cursor: pointer;
+      }
+
+      #leftpanel ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      #leftpanel ul li {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+      }
+
+      #leftpanel ul li a {
+        text-decoration: none;
+        color: #333;
+      }
     </style>
   </head>
 
@@ -48,7 +90,8 @@
       role="banner"
     >
       <a
-        href="#leftpanel"
+        href="#"
+        id="hamburger-menu"
         data-role="button"
         data-icon="bars"
         data-inline="true"
@@ -73,6 +116,15 @@
     <!-- Used the leaflet quickstart to get a basic map working https://leafletjs.com/examples/quick-start/ -->
     <div id="map"></div>
 
+    <div id="leftpanel">
+      <span class="close-btn" id="close-panel">Close Panel</span>
+      <ul>
+        <li><a href="#">Tour Selection</a></li>
+        <li><a href="#">Tour Directory</a></li>
+        <li><a href="#">WSU Mobile</a></li>
+      </ul>
+    </div>
+
     <!-- Dropdown Menu on the Right -->
     <div
       id="dropdown-container-hover"
@@ -82,7 +134,7 @@
         id="dropdown-button"
         style="
           padding: 10px;
-          background-color: #8000ff;
+          background-color: #3B1183;
           color: white;
           border: none;
           border-radius: 5px;
@@ -214,6 +266,18 @@
           alert(`You selected ${selectedOption}`);
           // Add logic here to handle the selected option
         });
+      });
+
+      // Toggle the hamburger menu and navigation panel
+      document.getElementById("hamburger-menu").addEventListener("click", function () {
+        const panel = document.getElementById("leftpanel");
+        panel.classList.toggle("open");
+      });
+
+      // Close the navigation panel
+      document.getElementById("close-panel").addEventListener("click", function () {
+        const panel = document.getElementById("leftpanel");
+        panel.classList.remove("open");
       });
     </script>
   </body>
