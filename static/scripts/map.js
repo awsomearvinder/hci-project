@@ -4,13 +4,59 @@ document.getElementById('dropdown-button').addEventListener('click', () => {
     dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
 });
 
-// Handle dropdown item clicks
+// Add event listeners to dropdown items
 document.querySelectorAll('.dropdown-item').forEach(item => {
     item.addEventListener('click', (event) => {
-        const selectedOption = event.target.textContent;
-        console.log(`Selected option: ${selectedOption}`);
-        alert(`You selected ${selectedOption}`);
-        // Add logic here to handle the selected option
+        event.preventDefault(); // Prevent default link behavior
+        const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
+        console.log(`Fetching data for themeId: ${themeId}`); // Log the selected themeId
+        fetchTextFromAPI(themeId); // Call the function with the selected themeId
+    });
+});
+
+// Initialize the map and a layer group for markers
+let mapInstance;
+let markersLayer;
+
+function initializeMap() {
+    // Create the map instance if it doesn't exist
+    if (!mapInstance) {
+        mapInstance = L.map('map').setView([44.047962, -91.644795], 17);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(mapInstance);
+
+        // Initialize the markers layer
+        markersLayer = L.layerGroup().addTo(mapInstance);
+    }
+}
+
+function updateMap(coordinates) {
+    // Clear existing markers
+    markersLayer.clearLayers();
+
+    // Define a custom tree icon
+    const treeIcon = L.icon({
+        iconUrl: '/images/tree.png',
+        iconSize: [32, 32], // Size of the icon
+        iconAnchor: [16, 32] // Anchor point of the icon
+    });
+
+    // Add new markers for the updated coordinates
+    coordinates.forEach(coord => {
+        L.marker([coord.Lat, coord.Lng], { icon: treeIcon }).addTo(markersLayer);
+    });
+}
+
+// Add event listeners to dropdown items
+document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default link behavior
+        const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
+        console.log(`Fetching data for themeId: ${themeId}`); // Log the selected themeId
+        fetchTextFromAPI(themeId); // Call the function with the selected themeId
     });
 });
 
@@ -29,8 +75,8 @@ async function fetchTextFromAPI(themeId) {
         const coordinates = parseCoordinates(text);
         console.log("Parsed Coordinates:", coordinates);
 
-        // Use the coordinates in the map function
-        map(coordinates);
+        // Update the map with the new coordinates
+        updateMap(coordinates);
     } catch (error) {
         console.error('Error fetching data:', error);
         document.getElementById("api-text").textContent = "Failed to load data.";
@@ -100,5 +146,7 @@ document.getElementById("close-panel").addEventListener("click", function () {
     const panel = document.getElementById("leftpanel");
     panel.classList.remove("open");
 });
-// Call the fetchTextFromAPI function when the page loads
-window.onload = fetchTextFromAPI(1);
+
+
+// Initialize the map when the page loads
+window.onload = initializeMap;
