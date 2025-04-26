@@ -1,57 +1,220 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>Map</title>
     <!-- arboretum CSS, we'll need to cite these-->
-    <link rel="stylesheet" href="https://www2.winona.edu/m/arboretum/resources/site.css" />
-    <link rel="stylesheet" href="https://www2.winona.edu/m/arboretum/resources/wsu-mobile.css" />
-    <link rel="stylesheet" href="//ajax.aspnetcdn.com/ajax/jquery.mobile/1.3.0/jquery.mobile.structure-1.3.0.min.css">
-    <link id="sa-css" rel="stylesheet" type="text/css" href="https://tags.srv.stackadapt.com/sa.css" media="all">
+    <link
+      rel="stylesheet"
+      href="https://www2.winona.edu/m/arboretum/resources/site.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://www2.winona.edu/m/arboretum/resources/wsu-mobile.css"
+    />
+    <link
+      rel="stylesheet"
+      href="//ajax.aspnetcdn.com/ajax/jquery.mobile/1.3.0/jquery.mobile.structure-1.3.0.min.css"
+    />
+    <link
+      id="sa-css"
+      rel="stylesheet"
+      type="text/css"
+      href="https://tags.srv.stackadapt.com/sa.css"
+      media="all"
+    />
     <!-- Leaflet CSS, also site this too-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <style>
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
 
-        #map {
-            height: 100%;
-        }
+      #map {
+        height: 100%;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <div data-role="header" id="header" class="ui-header ui-bar-a" role="banner"> 
-        <a href="#leftpanel" data-role="button" data-icon="bars" data-inline="true" data-mini="true" data-iconpos="notext" data-iconshadow="false" class="ui-btn-left ui-btn ui-btn-up-a ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-icon-notext" data-corners="true" data-shadow="true" data-wrapperels="span" data-theme="a" title="Navigation Panel"><span class="ui-btn-inner"><span class="ui-btn-text">Navigation Panel</span><span class="ui-icon ui-icon-bars">&nbsp;</span></span></a>
-        <h1 class="ui-title" role="heading" aria-level="1">Tour Map</h1>
+  <body>
+    <div
+      data-role="header"
+      id="header"
+      class="ui-header ui-bar-a"
+      role="banner"
+    >
+      <a
+        href="#leftpanel"
+        data-role="button"
+        data-icon="bars"
+        data-inline="true"
+        data-mini="true"
+        data-iconpos="notext"
+        data-iconshadow="false"
+        class="ui-btn-left ui-btn ui-btn-up-a ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-icon-notext"
+        data-corners="true"
+        data-shadow="true"
+        data-wrapperels="span"
+        data-theme="a"
+        title="Navigation Panel"
+      >
+        <span class="ui-btn-inner">
+          <span class="ui-btn-text">Navigation Panel</span>
+          <span class="ui-icon ui-icon-bars">&nbsp;</span>
+        </span>
+      </a>
+      <h1 class="ui-title" role="heading" aria-level="1">Tour Map</h1>
     </div>
-    <!--Used the leaflet quickstart to get a basic map working https://leafletjs.com/examples/quick-start/-->
+
+    <!-- Used the leaflet quickstart to get a basic map working https://leafletjs.com/examples/quick-start/ -->
     <div id="map"></div>
+
+    <!-- Dropdown Menu on the Right -->
+    <div
+      id="dropdown-container-hover"
+      style="position: absolute; top: 50px; right: 20px; z-index: 1000"
+    >
+      <button
+        id="dropdown-button"
+        style="
+          padding: 10px;
+          background-color: #8000ff;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+        "
+      >
+        Tours
+      </button>
+      <div
+        id="dropdown-menu"
+        style="
+          display: none;
+          margin-top: 5px;
+          background-color: white;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        "
+      >
+        <a href="#" class="w3-bar-item w3-button">Link 1</a>
+        <a href="#" class="w3-bar-item w3-button">Link 2</a>
+        <a href="#" class="w3-bar-item w3-button">Link 3</a>
+      </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
     <script>
-        var map = L.map('map').setView([44.047962, -91.644795], 17);
+      async function fetchTextFromAPI() {
+        try {
+          // Fetch data from the proxy server
+          const response = await fetch("/locations/api/themes/1");
+          console.log("Response object:", response); // Log the response object
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const text = await response.text(); // Read the response body as text
+          console.log("Fetched data:", text); // Log the fetched data
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
+          // Parse the coordinates from the text
+          const coordinates = parseCoordinates(text);
+          console.log("Parsed Coordinates:", coordinates);
+
+          // Use the coordinates in the map function
+          map(coordinates);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          document.getElementById("api-text").textContent =
+            "Failed to load data.";
+        }
+      }
+
+      function parseCoordinates(text) {
+        console.log("Raw text passed to parseCoordinates:", text); // Log the raw text
+
+        try {
+          // Use a regular expression to extract all <GeoLocation>...</GeoLocation> blocks
+          const geoLocationMatches = text.match(
+            /<GeoLocation>(.*?)<\/GeoLocation>/g
+          );
+
+          if (!geoLocationMatches) {
+            console.warn("No GeoLocation data found.");
+            return [];
+          }
+
+          // Extract Lat and Lng values from each GeoLocation block
+          const coordinates = geoLocationMatches.flatMap((match) => {
+            // Remove the <GeoLocation> tags and parse the JSON inside
+            const jsonString = match.replace(/<\/?GeoLocation>/g, "");
+            try {
+              const parsed = JSON.parse(jsonString); // Parse the JSON string
+              return parsed.map((coord) => ({
+                Lat: parseFloat(coord.Lat),
+                Lng: parseFloat(coord.Lng),
+              }));
+            } catch (error) {
+              console.error("Error parsing GeoLocation JSON:", error);
+              return [];
+            }
+          });
+
+          return coordinates; // Return the array of coordinates
+        } catch (error) {
+          console.error("Error parsing coordinates:", error);
+          return []; // Return an empty array if parsing fails
+        }
+      }
+
+      async function map(coordinates) {
+        // Initialize the map and set its view to the first coordinate
+        var map = L.map("map").setView([44.047962, -91.644795], 17);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          attribution: "&copy; OpenStreetMap contributors",
         }).addTo(map);
 
+        // Define a custom tree icon
         var treeIcon = L.icon({
-            iconUrl: '../images/tree.png'
+          iconUrl: "/images/tree.png",
+          iconSize: [32, 32], // Size of the icon
+          iconAnchor: [16, 32], // Anchor point of the icon
         });
 
-        L.marker([44.047962, -91.644795], {icon: treeIcon})
-            .addTo(map)
+        // Add markers for each coordinate
+        coordinates.forEach((coord) => {
+          L.marker([coord.Lat, coord.Lng], { icon: treeIcon }).addTo(map);
+        });
+      }
+
+      // Call the fetchTextFromAPI function when the page loads
+      window.onload = fetchTextFromAPI;
+
+      // Toggle the visibility of the dropdown menu
+      document
+        .getElementById("dropdown-button")
+        .addEventListener("click", () => {
+          const dropdownMenu = document.getElementById("dropdown-menu");
+          dropdownMenu.style.display =
+            dropdownMenu.style.display === "none" ? "block" : "none";
+        });
+
+      // Handle dropdown item clicks
+      document.querySelectorAll(".dropdown-item").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          const selectedOption = event.target.textContent;
+          console.log(`Selected option: ${selectedOption}`);
+          alert(`You selected ${selectedOption}`);
+          // Add logic here to handle the selected option
+        });
+      });
     </script>
-
-</body>
-
+  </body>
 </html>
