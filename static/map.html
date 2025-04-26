@@ -174,7 +174,10 @@
 
       async function map(coordinates) {
         // Initialize the map and set its view to the first coordinate
-        var map = L.map("map").setView([44.047962, -91.644795], 17);
+        var map = L.map("map").setView([44.047962, -91.644795], 17).locate({setView: true});
+        map.on("locationfound", (loc) => {
+            L.marker(loc.latlng).addTo(map);
+        })
 
         // Add OpenStreetMap tiles
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
