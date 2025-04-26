@@ -136,40 +136,29 @@
       }
 
       function parseCoordinates(text) {
-        console.log("Raw text passed to parseCoordinates:", text); // Log the raw text
+        // Use a regular expression to extract all <GeoLocation>...</GeoLocation> blocks
+        const geoLocationMatches = text.match(
+          /<GeoLocation>(.*?)<\/GeoLocation>/g
+        );
 
-        try {
-          // Use a regular expression to extract all <GeoLocation>...</GeoLocation> blocks
-          const geoLocationMatches = text.match(
-            /<GeoLocation>(.*?)<\/GeoLocation>/g
-          );
-
-          if (!geoLocationMatches) {
-            console.warn("No GeoLocation data found.");
-            return [];
-          }
-
-          // Extract Lat and Lng values from each GeoLocation block
-          const coordinates = geoLocationMatches.flatMap((match) => {
-            // Remove the <GeoLocation> tags and parse the JSON inside
-            const jsonString = match.replace(/<\/?GeoLocation>/g, "");
-            try {
-              const parsed = JSON.parse(jsonString); // Parse the JSON string
-              return parsed.map((coord) => ({
-                Lat: parseFloat(coord.Lat),
-                Lng: parseFloat(coord.Lng),
-              }));
-            } catch (error) {
-              console.error("Error parsing GeoLocation JSON:", error);
-              return [];
-            }
-          });
-
-          return coordinates; // Return the array of coordinates
-        } catch (error) {
-          console.error("Error parsing coordinates:", error);
-          return []; // Return an empty array if parsing fails
+        if (!geoLocationMatches) {
+          console.warn("No GeoLocation data found.");
+          return [];
         }
+
+        // Extract Lat and Lng values from each GeoLocation block
+        const coordinates = geoLocationMatches.flatMap((match) => {
+          // Remove the <GeoLocation> tags and parse the JSON inside
+          const jsonString = match.replace(/<\/?GeoLocation>/g, "");
+          if (jsonString.trim() == "") return [];
+          const parsed = JSON.parse(jsonString); // Parse the JSON string
+          return parsed.map((coord) => ({
+            Lat: parseFloat(coord.Lat),
+            Lng: parseFloat(coord.Lng),
+          }));
+        });
+
+        return coordinates; // Return the array of coordinates
       }
 
       async function map(coordinates) {
