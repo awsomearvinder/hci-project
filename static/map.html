@@ -79,6 +79,20 @@
         text-decoration: none;
         color: #333;
       }
+      #mobile-view {
+        display: none;
+        position: fixed;
+        height: 70vh;
+        bottom: 0;
+        width: 100vw;
+        background-color: white;
+        z-index: 401;
+      }
+      #mobile-view img {
+        width: 30rem;
+        overflow: hidden;
+        max-height: 20rem;
+      }
     </style>
   </head>
 
@@ -125,6 +139,14 @@
       </ul>
     </div>
 
+    <div id="mobile-view">
+        <div id="popup-content" style="padding: 10px;">
+            <h2 id="tree-name">Tree Information</h2>
+            <div id="tree-image-container" style="text-align: center;">
+                <img id="tree-image" src="temp" alt="Tree Image" style="max-width: 100%; height: auto;" />
+            </div>
+        </div>
+    </div>
     <!-- Dropdown Menu on the Right -->
 <div
 id="dropdown-container-hover"

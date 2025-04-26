@@ -1,3 +1,4 @@
+const map = initializeMap();
 // Toggle the visibility of the dropdown menu
 document.getElementById('dropdown-button').addEventListener('click', () => {
     const dropdownMenu = document.getElementById('dropdown-menu');
@@ -9,45 +10,19 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
     item.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
-        console.log(`Fetching data for themeId: ${themeId}`); // Log the selected themeId
         fetchTextFromAPI(themeId); // Call the function with the selected themeId
     });
 });
 
-// Initialize the map and a layer group for markers
-let mapInstance;
-let markersLayer;
-
 function initializeMap() {
     // Create the map instance if it doesn't exist
-    if (!mapInstance) {
-        mapInstance = L.map('map').setView([44.047962, -91.644795], 17);
+    let map = L.map('map').setView([44.047962, -91.644795], 17);
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(mapInstance);
-
-        // Initialize the markers layer
-        markersLayer = L.layerGroup().addTo(mapInstance);
-    }
-}
-
-function updateMap(coordinates) {
-    // Clear existing markers
-    markersLayer.clearLayers();
-
-    // Define a custom tree icon
-    const treeIcon = L.icon({
-        iconUrl: '/images/tree.png',
-        iconSize: [32, 32], // Size of the icon
-        iconAnchor: [16, 32] // Anchor point of the icon
-    });
-
-    // Add new markers for the updated coordinates
-    coordinates.forEach(coord => {
-        L.marker([coord.Lat, coord.Lng], { icon: treeIcon }).addTo(markersLayer);
-    });
+    return map;
 }
 
 // Add event listeners to dropdown items
@@ -55,7 +30,6 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
     item.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
-        console.log(`Fetching data for themeId: ${themeId}`); // Log the selected themeId
         fetchTextFromAPI(themeId); // Call the function with the selected themeId
     });
 });
@@ -64,16 +38,13 @@ async function fetchTextFromAPI(themeId) {
     try {
         // Fetch data from the proxy server
         const response = await fetch(`/locations/api/themes/${themeId}`);
-        console.log("Response object:", response); // Log the response object
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const text = await response.text(); // Read the response body as text
-        console.log("Fetched data:", text); // Log the fetched data
 
         // Parse the coordinates from the text
         const coordinates = parseCoordinates(text);
-        console.log("Parsed Coordinates:", coordinates);
 
         // Update the map with the new coordinates
         updateMap(coordinates);
@@ -84,39 +55,27 @@ async function fetchTextFromAPI(themeId) {
 }
 
 function parseCoordinates(text) {
-    console.log("Raw text passed to parseCoordinates:", text); // Log the raw text
-    try {
-        const geoLocationMatches = text.match(/<GeoLocation>(.*?)<\/GeoLocation>/g);
-
-        if (!geoLocationMatches) {
-            console.warn("No GeoLocation data found.");
-            return [];
-        }
-
-        const coordinates = geoLocationMatches.flatMap(match => {
-            const jsonString = match.replace(/<\/?GeoLocation>/g, "");
-            try {
-                const parsed = JSON.parse(jsonString); // Parse the JSON string
-                return parsed.map(coord => ({
-                    Lat: parseFloat(coord.Lat),
-                    Lng: parseFloat(coord.Lng)
-                }));
-            } catch (error) {
-                console.error("Error parsing GeoLocation JSON:", error);
-                return [];
-            }
-        });
-
-        return coordinates; // Return the array of coordinates
-    } catch (error) {
-        console.error("Error parsing coordinates:", error);
-        return []; // Return an empty array if parsing fails
-    }
+    let parser = new DOMParser();
+    let xmlParser = parser.parseFromString(text, "text/xml");
+    let entities = Array.from(xmlParser.getElementsByTagName("ThemeEntityAbridgedData"));
+    entities = entities.map((entity) => {
+        let imagePath = entity.getElementsByTagName("DefaultImagePath")[0].textContent;
+        let name = entity.getElementsByTagName("DisplayName")[0].textContent;
+        let id = entity.getElementsByTagName("EntityId")[0].textContent;
+        let location = entity.getElementsByTagName("GeoLocation")[0].textContent;
+        return {
+            imagePath: imagePath,
+            name: name,
+            id: id,
+            location: location,
+        };
+    });
+    
+    return entities;
 }
 
-async function map(coordinates) {
+async function updateMap(entities) {
     // Initialize the map and set its view to the first coordinate
-    var map = L.map('map').setView([44.047962, -91.644795], 17);
 
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -131,8 +90,14 @@ async function map(coordinates) {
     });
 
     // Add markers for each coordinate
-    coordinates.forEach(coord => {
-        L.marker([coord.Lat, coord.Lng], { icon: treeIcon }).addTo(map);
+    entities.forEach(entity=> {
+      if (entity.location.trim() == "") return;
+      let locs = JSON.parse(entity.location);
+      for(const loc of locs) {
+          let marker = L.marker([loc.Lat, loc.Lng], { icon: treeIcon });
+          marker.on('click', (_) => setTreeInfo(entity.id));
+          marker.addTo(map);
+      }
     });
 }
 // Toggle the hamburger menu and navigation panel
@@ -141,12 +106,27 @@ document.getElementById("hamburger-menu").addEventListener("click", function () 
     panel.classList.toggle("open");
 });
 
+async function setTreeInfo(treeID) {
+    const view = document.getElementById("mobile-view");
+    view.style.display = "block";
+    const treeNameElement = document.getElementById("tree-name");
+    const treeImageElement = document.getElementById("tree-image");
+    const treeImageContainer = document.getElementById('tree-image-container');
+    
+    const treeDataResp = await fetch('/locations/api/entities/' + treeID);
+    const treeData = await treeDataResp.text();
+    const parser = new DOMParser();
+    const treeXML = parser.parseFromString(treeData, "text/xml");
+    
+    treeImageElement.src = treeXML.getElementsByTagName("DefaultImagePath")[0].textContent;
+    treeNameElement.textContent = treeXML.getElementsByTagName("DisplayName")[0].textContent;
+    treeImageElement.style.display = 'block';
+    treeImageContainer.style.display = 'block';
+}
 // Close the navigation panel
 document.getElementById("close-panel").addEventListener("click", function () {
     const panel = document.getElementById("leftpanel");
     panel.classList.remove("open");
 });
-
-
 // Initialize the map when the page loads
 window.onload = initializeMap;
