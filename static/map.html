@@ -24,62 +24,9 @@
     />
     <!-- Leaflet CSS, also site this too-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="map.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <style>
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-
-      #map {
-        height: 100%;
-      }
-
-      #leftpanel {
-        position: absolute;
-        top: 0;
-        left: -250px;
-        width: 250px;
-        height: 100%;
-        background-color: #f4f4f4;
-        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-        overflow-y: auto;
-        z-index: 9999;
-        transition: left 0.3s ease-in-out;
-      }
-
-      #leftpanel.open {
-        left: 0;
-      }
-
-      #leftpanel .close-btn {
-        display: block;
-        padding: 10px;
-        background-color: #3B1183;
-        color: white;
-        text-align: center;
-        cursor: pointer;
-      }
-
-      #leftpanel ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      #leftpanel ul li {
-        padding: 10px;
-        border-bottom: 1px solid #ccc;
-      }
-
-      #leftpanel ul li a {
-        text-decoration: none;
-        color: #333;
-      }
-    </style>
   </head>
 
   <body>
