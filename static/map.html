@@ -126,56 +126,63 @@
     </div>
 
     <!-- Dropdown Menu on the Right -->
-    <div
-      id="dropdown-container-hover"
-      style="position: absolute; top: 50px; right: 20px; z-index: 1000"
-    >
-      <button
-        id="dropdown-button"
-        style="
-          padding: 10px;
-          background-color: #11831b;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-        "
-      >
-        Tours
-      </button>
-      <div
-        id="dropdown-menu"
-        style="
-          display: none;
-          margin-top: 5px;
-          border: 1px solid black;
-          border-radius: 5px;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        "
-      >
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="1">Tree Tour</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="3">Legume Family</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="4">Grass Family</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="5">Edible</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="6">Medicinal</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="18">Shakesphere Tree Tour</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="19">Butterflies</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="20">Birds</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="24">Flowering Trees of WSU</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="26">Cultivar Garden</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="27">Bioswale #3</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="28">Bioswale #1 & #2</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="29">Bioswale #4</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="30">Bioswale #5</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="34">Younger Courtyard</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="36">IWC Native Garden - Monarch Waystation</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="37">IWC Native Garden - Larval Host Plants</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="38">Indigenous Learning Garden</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="39">IWC Native Plants Garden</a>
-      <a href="#" class="dropdown-item w3-bar-item w3-button" data-theme-id="40">Rock Elm Garden</a>
- 
-      </div>
-    </div>
+<div
+id="dropdown-container-hover"
+style="position: absolute; top: 50px; right: 20px; z-index: 1000;"
+>
+<button
+  id="dropdown-button"
+  style="
+    padding: 10px;
+    background-color: #3B1183;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    
+  "
+>
+  Tours
+</button>
+<div
+  id="dropdown-menu"
+  style="
+    display: none;
+    margin-top: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    min-width: 200px; /* optional: makes it nicer */
+    overflow-y: auto; /* optional: adds scroll if too many items */
+    max-height: 300px; /* optional: limit height */
+  "
+>
+  <a href="#" class="dropdown-item" data-theme-id="1">Tree Tour</a>
+  <a href="#" class="dropdown-item" data-theme-id="3">Legume Family</a>
+  <a href="#" class="dropdown-item" data-theme-id="4">Grass Family</a>
+  <a href="#" class="dropdown-item" data-theme-id="5">Edible</a>
+  <a href="#" class="dropdown-item" data-theme-id="6">Medicinal</a>
+  <a href="#" class="dropdown-item" data-theme-id="18">Shakesphere Tree Tour</a>
+  <a href="#" class="dropdown-item" data-theme-id="19">Butterflies</a>
+  <a href="#" class="dropdown-item" data-theme-id="20">Birds</a>
+  <a href="#" class="dropdown-item" data-theme-id="24">Flowering Trees of WSU</a>
+  <a href="#" class="dropdown-item" data-theme-id="26">Cultivar Garden</a>
+  <a href="#" class="dropdown-item" data-theme-id="27">Bioswale #3</a>
+  <a href="#" class="dropdown-item" data-theme-id="28">Bioswale #1 & #2</a>
+  <a href="#" class="dropdown-item" data-theme-id="29">Bioswale #4</a>
+  <a href="#" class="dropdown-item" data-theme-id="30">Bioswale #5</a>
+  <a href="#" class="dropdown-item" data-theme-id="34">Younger Courtyard</a>
+  <a href="#" class="dropdown-item" data-theme-id="36">IWC Native Garden - Monarch Waystation</a>
+  <a href="#" class="dropdown-item" data-theme-id="37">IWC Native Garden - Larval Host Plants</a>
+  <a href="#" class="dropdown-item" data-theme-id="38">Indigenous Learning Garden</a>
+  <a href="#" class="dropdown-item" data-theme-id="39">IWC Native Plants Garden</a>
+  <a href="#" class="dropdown-item" data-theme-id="40">Rock Elm Garden</a>
+</div>
+</div>
+
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 

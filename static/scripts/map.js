@@ -1,7 +1,7 @@
 // Toggle the visibility of the dropdown menu
 document.getElementById('dropdown-button').addEventListener('click', () => {
     const dropdownMenu = document.getElementById('dropdown-menu');
-    dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'block' : 'none';
+    dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'flex' : 'none';
 });
 
 // Add event listeners to dropdown items
