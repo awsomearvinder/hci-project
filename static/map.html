@@ -2,27 +2,12 @@
 <html>
   <head>
     <title>Map</title>
-    <!-- arboretum CSS, we'll need to cite these-->
-    <link
-      rel="stylesheet"
-      href="https://www2.winona.edu/m/arboretum/resources/site.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://www2.winona.edu/m/arboretum/resources/wsu-mobile.css"
-    />
-    <link
-      rel="stylesheet"
-      href="//ajax.aspnetcdn.com/ajax/jquery.mobile/1.3.0/jquery.mobile.structure-1.3.0.min.css"
-    />
-    <link
-      id="sa-css"
-      rel="stylesheet"
-      type="text/css"
-      href="https://tags.srv.stackadapt.com/sa.css"
-      media="all"
-    />
-    <!-- Leaflet CSS, also site this too-->
+    <!-- arboretum CSS, we'll need to cite these -->
+    <link rel="stylesheet" href="https://www2.winona.edu/m/arboretum/resources/site.css" />
+    <link rel="stylesheet" href="https://www2.winona.edu/m/arboretum/resources/wsu-mobile.css" />
+    <link rel="stylesheet" href="//ajax.aspnetcdn.com/ajax/jquery.mobile/1.3.0/jquery.mobile.structure-1.3.0.min.css" />
+    <link id="sa-css" rel="stylesheet" type="text/css" href="https://tags.srv.stackadapt.com/sa.css" media="all" />
+    <!-- Leaflet CSS, also site this too -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -33,11 +18,11 @@
         margin: 0;
         padding: 0;
       }
-
+      
       #map {
         height: 100%;
       }
-
+      
       #leftpanel {
         position: absolute;
         top: 0;
@@ -50,31 +35,31 @@
         z-index: 9999;
         transition: left 0.3s ease-in-out;
       }
-
+      
       #leftpanel.open {
         left: 0;
       }
-
+      
       #leftpanel .close-btn {
         display: block;
         padding: 10px;
-        background-color: #3B1183;
+        background-color: #3b1183;
         color: white;
         text-align: center;
         cursor: pointer;
       }
-
+      
       #leftpanel ul {
         list-style: none;
         padding: 0;
         margin: 0;
       }
-
+      
       #leftpanel ul li {
         padding: 10px;
         border-bottom: 1px solid #ccc;
       }
-
+      
       #leftpanel ul li a {
         text-decoration: none;
         color: #333;
@@ -85,7 +70,7 @@
         height: 70vh;
         bottom: 0;
         width: 100vw;
-        background-color: #D9D5D1 ;
+        background-color: #d9d5d1;
         z-index: 401;
         border-top: 5px solid black;
       }
@@ -94,55 +79,76 @@
         overflow: hidden;
         max-height: 20rem;
       }
-      #popup-content{
+      #popup-content {
         padding: 10px;
         margin: 10px;
         text-align: center;
       }
-      #popup-header{
+      #popup-header {
         display: flex;
         align-items: center;
         position: relative;
         padding-bottom: 10px;
       }
-      #tree-name{
+      #tree-name {
         white-space: nowrap;
-        width:fit-content;position: absolute;
+        width: fit-content;
+        position: absolute;
         left: 50%;
         transform: translateX(-50%);
       }
-      #popup-close-button{
+      #popup-close-button {
         align-self: self-end;
         margin-left: auto;
         align-items: center;
         position: relative;
       }
+      
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        #map {
+          height: 70vh;
+        }
+      
+        #leftpanel {
+          width: 100%;
+          left: -100%;
+        }
+      
+        #leftpanel.open {
+          left: 0;
+        }
+      
+        #leftpanel ul {
+          padding: 10px;
+        }
+      
+        #mobile-view {
+          display: block;
+        }
+      
+        #popup-header {
+          padding-bottom: 5px;
+          text-align: center;
+        }
+      
+        #tree-name {
+          font-size: 1.2rem;
+        }
+      
+        #popup-close-button {
+          position: absolute;
+          right: 10px;
+          top: 10px;
+          font-size: 1rem;
+        }
+      }
     </style>
   </head>
 
   <body>
-    <div
-      data-role="header"
-      id="header"
-      class="ui-header ui-bar-a"
-      role="banner"
-    >
-      <a
-        href="#"
-        id="hamburger-menu"
-        data-role="button"
-        data-icon="bars"
-        data-inline="true"
-        data-mini="true"
-        data-iconpos="notext"
-        data-iconshadow="false"
-        class="ui-btn-left ui-btn ui-btn-up-a ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-icon-notext"
-        data-corners="true"
-        data-shadow="true"
-        data-wrapperels="span"
-        data-theme="a"
-        title="Navigation Panel"
-      >
+    <div data-role="header" id="header" class="ui-header ui-bar-a" role="banner">
+      <a href="#" id="hamburger-menu" data-role="button" data-icon="bars" data-inline="true" data-mini="true" data-iconpos="notext" data-iconshadow="false" class="ui-btn-left ui-btn ui-btn-up-a ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-icon-notext" data-corners="true" data-shadow="true" data-wrapperels="span" data-theme="a" title="Navigation Panel">
         <span class="ui-btn-inner">
           <span class="ui-btn-text">Navigation Panel</span>
           <span class="ui-icon ui-icon-bars">&nbsp;</span>
@@ -157,36 +163,35 @@
     <div id="leftpanel">
       <span class="close-btn" id="close-panel">Close Panel</span>
       <ul>
-        <li><a href="#">Tour Selection</a></li>
-        <li><a href="#">Tour Directory</a></li>
-        <li><a href="#">WSU Mobile</a></li>
+        <li>
+          <a href="#">Tour Selection</a>
+        </li>
+        <li>
+          <a href="#">Tour Directory</a>
+        </li>
+        <li>
+          <a href="#">WSU Mobile</a>
+        </li>
       </ul>
     </div>
 
-    <div id="mobile-view" >
-        <div id="popup-content" >
-            <div id="popup-header">
-            <h2 class="ui-title" id="tree-name" >Tree Information</h2>
-            <button class="ui-btn-corner-all" id="popup-close-button"onclick="this.parentNode.parentNode.parentNode.style.display = 'none';">X</button>
+    <div id="mobile-view">
+      <div id="popup-content">
+        <div id="popup-header">
+          <h2 class="ui-title" id="tree-name">Tree Information</h2>
+          <button class="ui-btn-corner-all" id="popup-close-button" onclick="this.parentNode.parentNode.parentNode.style.display = 'none';">X</button>
         </div>
-            <div id="tree-image-container">
-                <!--add link to more info here? will need to get entity and tour id to get right info-->
-                <!--https://www2.winona.edu/m/arboretum/about.asp?e=[entity id here]&t=[tour id here]-->
-                <a href="">
-                    <img id="tree-image" src="temp" alt="Tree Image" style="max-width: 100%; height: auto;"  />
-                </a>
-                <p style="align-items: center; padding-bottom: 10px;">For more info. Click the Image</p>
-            </div>
+        <div id="tree-image-container">
+          <!-- add link to more info here? will need to get entity and tour id to get right info -->
+          <!-- https://www2.winona.edu/m/arboretum/about.asp?e=[entity id here]&t=[tour id here] -->
+          <a href=""><img id="tree-image" src="temp" alt="Tree Image" style="max-width: 100%; height: auto;" /></a>
+          <p style="align-items: center; padding-bottom: 10px;">For more info. Click the Image</p>
         </div>
+      </div>
     </div>
     <!-- Dropdown Menu on the Right -->
-<div
-id="dropdown-container-hover"
-style="position: absolute; top: 50px; right: 20px; z-index: 1000;"
->
-<button
-  id="dropdown-button"
-  style="
+    <div id="dropdown-container-hover" style="position: absolute; top: 50px; right: 20px; z-index: 1000;">
+      <button id="dropdown-button" style="
     padding: 10px;
     background-color: #3B1183;
     color: white;
@@ -194,13 +199,8 @@ style="position: absolute; top: 50px; right: 20px; z-index: 1000;"
     border-radius: 5px;
     cursor: pointer;
     
-  "
->
-  Tours
-</button>
-<div
-  id="dropdown-menu"
-  style="
+  ">Tours</button>
+      <div id="dropdown-menu" style="
     display: none;
     margin-top: 5px;
     border: 1px solid black;
@@ -212,31 +212,29 @@ style="position: absolute; top: 50px; right: 20px; z-index: 1000;"
     min-width: 200px; /* optional: makes it nicer */
     overflow-y: auto; /* optional: adds scroll if too many items */
     max-height: 300px; /* optional: limit height */
-  "
->
-  <a href="#" class="dropdown-item" data-theme-id="1">Tree Tour</a>
-  <a href="#" class="dropdown-item" data-theme-id="3">Legume Family</a>
-  <a href="#" class="dropdown-item" data-theme-id="4">Grass Family</a>
-  <a href="#" class="dropdown-item" data-theme-id="5">Edible</a>
-  <a href="#" class="dropdown-item" data-theme-id="6">Medicinal</a>
-  <a href="#" class="dropdown-item" data-theme-id="18">Shakesphere Tree Tour</a>
-  <a href="#" class="dropdown-item" data-theme-id="19">Butterflies</a>
-  <a href="#" class="dropdown-item" data-theme-id="20">Birds</a>
-  <a href="#" class="dropdown-item" data-theme-id="24">Flowering Trees of WSU</a>
-  <a href="#" class="dropdown-item" data-theme-id="26">Cultivar Garden</a>
-  <a href="#" class="dropdown-item" data-theme-id="27">Bioswale #3</a>
-  <a href="#" class="dropdown-item" data-theme-id="28">Bioswale #1 & #2</a>
-  <a href="#" class="dropdown-item" data-theme-id="29">Bioswale #4</a>
-  <a href="#" class="dropdown-item" data-theme-id="30">Bioswale #5</a>
-  <a href="#" class="dropdown-item" data-theme-id="34">Younger Courtyard</a>
-  <a href="#" class="dropdown-item" data-theme-id="36">IWC Native Garden - Monarch Waystation</a>
-  <a href="#" class="dropdown-item" data-theme-id="37">IWC Native Garden - Larval Host Plants</a>
-  <a href="#" class="dropdown-item" data-theme-id="38">Indigenous Learning Garden</a>
-  <a href="#" class="dropdown-item" data-theme-id="39">IWC Native Plants Garden</a>
-  <a href="#" class="dropdown-item" data-theme-id="40">Rock Elm Garden</a>
-</div>
-</div>
-
+  ">
+        <a href="#" class="dropdown-item" data-theme-id="1">Tree Tour</a>
+        <a href="#" class="dropdown-item" data-theme-id="3">Legume Family</a>
+        <a href="#" class="dropdown-item" data-theme-id="4">Grass Family</a>
+        <a href="#" class="dropdown-item" data-theme-id="5">Edible</a>
+        <a href="#" class="dropdown-item" data-theme-id="6">Medicinal</a>
+        <a href="#" class="dropdown-item" data-theme-id="18">Shakesphere Tree Tour</a>
+        <a href="#" class="dropdown-item" data-theme-id="19">Butterflies</a>
+        <a href="#" class="dropdown-item" data-theme-id="20">Birds</a>
+        <a href="#" class="dropdown-item" data-theme-id="24">Flowering Trees of WSU</a>
+        <a href="#" class="dropdown-item" data-theme-id="26">Cultivar Garden</a>
+        <a href="#" class="dropdown-item" data-theme-id="27">Bioswale #3</a>
+        <a href="#" class="dropdown-item" data-theme-id="28">Bioswale #1 & #2</a>
+        <a href="#" class="dropdown-item" data-theme-id="29">Bioswale #4</a>
+        <a href="#" class="dropdown-item" data-theme-id="30">Bioswale #5</a>
+        <a href="#" class="dropdown-item" data-theme-id="34">Younger Courtyard</a>
+        <a href="#" class="dropdown-item" data-theme-id="36">IWC Native Garden - Monarch Waystation</a>
+        <a href="#" class="dropdown-item" data-theme-id="37">IWC Native Garden - Larval Host Plants</a>
+        <a href="#" class="dropdown-item" data-theme-id="38">Indigenous Learning Garden</a>
+        <a href="#" class="dropdown-item" data-theme-id="39">IWC Native Plants Garden</a>
+        <a href="#" class="dropdown-item" data-theme-id="40">Rock Elm Garden</a>
+      </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
