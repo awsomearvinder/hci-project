@@ -1,5 +1,3 @@
-import { icon } from "leaflet";
-
 const map = initializeMap();
 // Toggle the visibility of the dropdown menu
 document.getElementById('dropdown-button').addEventListener('click', () => {
@@ -134,6 +132,7 @@ function determineIcon(entity) {
         const treeNameElement = document.getElementById("tree-name");
         const treeImageElement = document.getElementById("tree-image");
         const treeImageContainer = document.getElementById('tree-image-container');
+        const treeImageLink = treeImageElement.parentElement;
 
         const treeDataResp = await fetch('/locations/api/entities/' + treeID);
         const treeData = await treeDataResp.text();
@@ -144,6 +143,8 @@ function determineIcon(entity) {
         treeNameElement.textContent = treeXML.getElementsByTagName("DisplayName")[0].textContent;
         treeImageElement.style.display = 'block';
         treeImageContainer.style.display = 'block';
+        treeImageLink.href = "https://www2.winona.edu/m/arboretum/about.asp?e=" + treeID;
+
     }
     // Close the navigation panel
     document.getElementById("close-panel").addEventListener("click", function () {
