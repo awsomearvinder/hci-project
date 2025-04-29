@@ -11,7 +11,7 @@ function initializeMap() {
     return map;
 }
 
-async function fetchTextFromAPI(themeId) {
+async function updateMapFromAPI(themeId) {
     try {
         // Fetch data from the proxy server
         const response = await fetch(`/locations/api/themes/${themeId}`);
@@ -21,17 +21,17 @@ async function fetchTextFromAPI(themeId) {
         const text = await response.text(); // Read the response body as text
 
         // Parse the coordinates from the text
-        const coordinates = parseCoordinates(text);
+        const entity = deserializeEntities(text);
 
         // Update the map with the new coordinates
-        updateMap(coordinates);
+        updateMap(entity);
     } catch (error) {
         console.error('Error fetching data:', error);
         document.getElementById("api-text").textContent = "Failed to load data.";
     }
 }
 
-function parseCoordinates(text) {
+function deserializeEntities(text) {
     let parser = new DOMParser();
     let xmlParser = parser.parseFromString(text, "text/xml");
     let entities = Array.from(xmlParser.getElementsByTagName("ThemeEntityAbridgedData"));
@@ -92,14 +92,14 @@ async function updateMap(entities, iconType) {
         let locs = JSON.parse(entity.location);
         for (const loc of locs) {
             let marker = L.marker([loc.Lat, loc.Lng], { icon: treeIcon });
-            marker.on('click', (_) => setTreeInfo(entity.id));
+            marker.on('click', (_) => setTreeInfo(entity));
             marker.addTo(map);
             marker.icon = "images/" + iconType
         }
     });
 }
 
-async function setTreeInfo(treeID) {
+async function setTreeInfo(entity) {
     const view = document.getElementById("mobile-view");
     view.style.display = "block";
     const treeNameElement = document.getElementById("tree-name");
@@ -107,16 +107,16 @@ async function setTreeInfo(treeID) {
     const treeImageContainer = document.getElementById('tree-image-container');
     const treeImageLink = treeImageElement.parentElement;
 
-    const treeDataResp = await fetch('/locations/api/entities/' + treeID);
+    const treeDataResp = await fetch('/locations/api/entities/' + entity.id);
     const treeData = await treeDataResp.text();
     const parser = new DOMParser();
     const treeXML = parser.parseFromString(treeData, "text/xml");
 
-    treeImageElement.src = treeXML.getElementsByTagName("DefaultImagePath")[0].textContent;
-    treeNameElement.textContent = treeXML.getElementsByTagName("DisplayName")[0].textContent;
+    treeImageElement.src = entity.imagePath;
+    treeNameElement.textContent = entity.name;
     treeImageElement.style.display = 'block';
     treeImageContainer.style.display = 'block';
-    treeImageLink.href = "https://www2.winona.edu/m/arboretum/about.asp?e=" + treeID;
+    treeImageLink.href = "https://www2.winona.edu/m/arboretum/about.asp?e=" + entity.id;
 
 }
 
@@ -131,7 +131,7 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
     item.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
-        fetchTextFromAPI(themeId); // Call the function with the selected themeId
+        updateMapFromAPI(themeId); // Call the function with the selected themeId
     });
 });
 
@@ -140,7 +140,7 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
     item.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default link behavior
         const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
-        fetchTextFromAPI(themeId); // Call the function with the selected themeId
+        updateMapFromAPI(themeId); // Call the function with the selected themeId
     });
 });
 

@@ -86,29 +86,23 @@
       }
       #popup-header {
         display: flex;
+        flex-direction: row;
         align-items: center;
         position: relative;
         padding-bottom: 10px;
       }
+      .ui-title {
+        margin: 0;
+        width: 33%;
+        padding: 0;
+      }
       #tree-name {
         white-space: nowrap;
         width: fit-content;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      #popup-close-button {
-        align-self: self-end;
-        margin-left: auto;
-        align-items: center;
-        position: relative;
       }
       
     /* Responsive Design */
-      @media (max-width: 768px) {
-        #map {
-          height: 70vh;
-        }
+
       
         #leftpanel {
           width: 100%;
@@ -124,7 +118,7 @@
         }
       
         #popup-header {
-          padding-bottom: 5px;
+          padding-bottom: 20px;
           text-align: center;
         }
       
@@ -133,12 +127,9 @@
         }
       
         #popup-close-button {
-          position: absolute;
-          right: 10px;
-          top: 10px;
           font-size: 1rem;
         }
-      }
+      
     </style>
   </head>
 
@@ -174,8 +165,11 @@
     <div id="mobile-view">
       <div id="popup-content">
         <div id="popup-header">
-          <h2 class="ui-title" id="tree-name">Tree Information</h2>
-          <button class="ui-btn-corner-all" id="popup-close-button" onclick="this.parentNode.parentNode.parentNode.style.display = 'none';">X</button>
+          <span style="width: 33%;"></span>
+          <h2 class="ui-title" style="width: 33%;" id="tree-name">Tree Information</h2>
+          <div id="right-align-please" style="display: flex; justify-content: flex-end; width: 34%; align-items: center;">
+            <button class="ui-btn-corner-all" id="popup-close-button" onclick="this.parentNode.parentNode.parentNode.parentNode.style.display = 'none';">X</button>
+          </div>
         </div>
         <div id="tree-image-container">
           <a href=""><img id="tree-image" src="temp" alt="Tree Image" style="max-width: 100%; height: auto;" /></a>
