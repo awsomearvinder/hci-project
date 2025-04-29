@@ -1,18 +1,4 @@
 const map = initializeMap();
-// Toggle the visibility of the dropdown menu
-document.getElementById('dropdown-button').addEventListener('click', () => {
-    const dropdownMenu = document.getElementById('dropdown-menu');
-    dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'flex' : 'none';
-});
-
-// Add event listeners to dropdown items
-document.querySelectorAll('.dropdown-item').forEach(item => {
-    item.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default link behavior
-        const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
-        fetchTextFromAPI(themeId); // Call the function with the selected themeId
-    });
-});
 
 function initializeMap() {
     // Create the map instance if it doesn't exist
@@ -24,15 +10,6 @@ function initializeMap() {
 
     return map;
 }
-
-// Add event listeners to dropdown items
-document.querySelectorAll('.dropdown-item').forEach(item => {
-    item.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default link behavior
-        const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
-        fetchTextFromAPI(themeId); // Call the function with the selected themeId
-    });
-});
 
 async function fetchTextFromAPI(themeId) {
     try {
@@ -73,12 +50,13 @@ function parseCoordinates(text) {
 
     return entities;
 }
+
 //we cant do this without making A LOT if api calls to the arboretum (1 call per icon, some tours have 100+)
 //I don't want to make the WSU IT team/arbortum mad, so this is what we would do if able
 function determineIcon(entity) {
     console.log(entity)
     for (let i = 0; i < entity.length; i++) {
-        
+
         const attributeName = entity[i].getElementsByTagName('AttributeName')[i].textContent;
         //check for unique attributes in each entity, if match, return icon path
         if (attributeName === 'Bark') {
@@ -93,63 +71,89 @@ function determineIcon(entity) {
     }
     return "trees-svgrepo-com"
 }
-    async function updateMap(entities, iconType) {
-        // Initialize the map and set its view to the first coordinate
+async function updateMap(entities, iconType) {
+    // Initialize the map and set its view to the first coordinate
 
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-        // Define a custom tree icon
-        var treeIcon = L.icon({
-            iconUrl: 'images/trees-svgrepo-com.svg',
-            iconSize: [32, 32], // Size of the icon
-            iconAnchor: [16, 32] // Anchor point of the icon
-        });
-
-        // Add markers for each coordinate
-        entities.forEach(entity => {
-            if (entity.location.trim() == "") return;
-            let locs = JSON.parse(entity.location);
-            for (const loc of locs) {
-                let marker = L.marker([loc.Lat, loc.Lng], { icon: treeIcon });
-                marker.on('click', (_) => setTreeInfo(entity.id));
-                marker.addTo(map);
-                marker.icon = "images/" +  iconType
-            }
-        });
-    }
-    // Toggle the hamburger menu and navigation panel
-    document.getElementById("hamburger-menu").addEventListener("click", function () {
-        const panel = document.getElementById("leftpanel");
-        panel.classList.toggle("open");
+    // Define a custom tree icon
+    var treeIcon = L.icon({
+        iconUrl: 'images/trees-svgrepo-com.svg',
+        iconSize: [32, 32], // Size of the icon
+        iconAnchor: [16, 32] // Anchor point of the icon
     });
 
-    async function setTreeInfo(treeID) {
-        const view = document.getElementById("mobile-view");
-        view.style.display = "block";
-        const treeNameElement = document.getElementById("tree-name");
-        const treeImageElement = document.getElementById("tree-image");
-        const treeImageContainer = document.getElementById('tree-image-container');
-        const treeImageLink = treeImageElement.parentElement;
-
-        const treeDataResp = await fetch('/locations/api/entities/' + treeID);
-        const treeData = await treeDataResp.text();
-        const parser = new DOMParser();
-        const treeXML = parser.parseFromString(treeData, "text/xml");
-
-        treeImageElement.src = treeXML.getElementsByTagName("DefaultImagePath")[0].textContent;
-        treeNameElement.textContent = treeXML.getElementsByTagName("DisplayName")[0].textContent;
-        treeImageElement.style.display = 'block';
-        treeImageContainer.style.display = 'block';
-        treeImageLink.href = "https://www2.winona.edu/m/arboretum/about.asp?e=" + treeID;
-
-    }
-    // Close the navigation panel
-    document.getElementById("close-panel").addEventListener("click", function () {
-        const panel = document.getElementById("leftpanel");
-        panel.classList.remove("open");
+    // Add markers for each coordinate
+    entities.forEach(entity => {
+        if (entity.location.trim() == "") return;
+        let locs = JSON.parse(entity.location);
+        for (const loc of locs) {
+            let marker = L.marker([loc.Lat, loc.Lng], { icon: treeIcon });
+            marker.on('click', (_) => setTreeInfo(entity.id));
+            marker.addTo(map);
+            marker.icon = "images/" + iconType
+        }
     });
-    // Initialize the map when the page loads
-    window.onload = initializeMap;
+}
+
+async function setTreeInfo(treeID) {
+    const view = document.getElementById("mobile-view");
+    view.style.display = "block";
+    const treeNameElement = document.getElementById("tree-name");
+    const treeImageElement = document.getElementById("tree-image");
+    const treeImageContainer = document.getElementById('tree-image-container');
+    const treeImageLink = treeImageElement.parentElement;
+
+    const treeDataResp = await fetch('/locations/api/entities/' + treeID);
+    const treeData = await treeDataResp.text();
+    const parser = new DOMParser();
+    const treeXML = parser.parseFromString(treeData, "text/xml");
+
+    treeImageElement.src = treeXML.getElementsByTagName("DefaultImagePath")[0].textContent;
+    treeNameElement.textContent = treeXML.getElementsByTagName("DisplayName")[0].textContent;
+    treeImageElement.style.display = 'block';
+    treeImageContainer.style.display = 'block';
+    treeImageLink.href = "https://www2.winona.edu/m/arboretum/about.asp?e=" + treeID;
+
+}
+
+// Toggle the visibility of the dropdown menu
+document.getElementById('dropdown-button').addEventListener('click', () => {
+    const dropdownMenu = document.getElementById('dropdown-menu');
+    dropdownMenu.style.display = dropdownMenu.style.display === 'none' ? 'flex' : 'none';
+});
+
+// Add event listeners to dropdown items
+document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default link behavior
+        const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
+        fetchTextFromAPI(themeId); // Call the function with the selected themeId
+    });
+});
+
+// Add event listeners to dropdown items
+document.querySelectorAll('.dropdown-item').forEach(item => {
+    item.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default link behavior
+        const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
+        fetchTextFromAPI(themeId); // Call the function with the selected themeId
+    });
+});
+
+// Toggle the hamburger menu and navigation panel
+document.getElementById("hamburger-menu").addEventListener("click", function () {
+    const panel = document.getElementById("leftpanel");
+    panel.classList.toggle("open");
+});
+
+
+// Close the navigation panel
+document.getElementById("close-panel").addEventListener("click", function () {
+    const panel = document.getElementById("leftpanel");
+    panel.classList.remove("open");
+});
+
