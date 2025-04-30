@@ -134,17 +134,11 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
         event.preventDefault(); // Prevent default link behavior
         const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
         updateMapFromAPI(themeId); // Call the function with the selected themeId
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        dropdownMenu.style.display = dropdownMenu.style.display = 'none';
     });
 });
 
-// Add event listeners to dropdown items
-document.querySelectorAll('.dropdown-item').forEach(item => {
-    item.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default link behavior
-        const themeId = event.target.getAttribute('data-theme-id'); // Get the themeId from the data attribute
-        updateMapFromAPI(themeId); // Call the function with the selected themeId
-    });
-});
 
 // Toggle the hamburger menu and navigation panel
 document.getElementById("hamburger-menu").addEventListener("click", function () {
