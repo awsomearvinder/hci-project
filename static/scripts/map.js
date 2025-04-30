@@ -104,6 +104,7 @@ async function setTreeInfo(entity) {
     const treeNameElement = document.getElementById("tree-name");
     const treeImageElement = document.getElementById("tree-image");
     const treeImageContainer = document.getElementById('tree-image-container');
+    const treeDescriptionElement = document.getElementById("imageRight");
     const treeImageLink = treeImageElement.parentElement;
 
     const treeDataResp = await fetch('/locations/api/entities/' + entity.id);
@@ -111,10 +112,12 @@ async function setTreeInfo(entity) {
     const parser = new DOMParser();
     const treeXML = parser.parseFromString(treeData, "text/xml");
 
+    const description = treeXML.getElementsByTagName("Description")[0].textContent;
+    treeDescriptionElement.textContent = description;
+
     treeImageElement.src = entity.imagePath;
     treeNameElement.textContent = entity.name;
     treeImageElement.style.display = 'block';
-    treeImageContainer.style.display = 'block';
     treeImageLink.href = "https://www2.winona.edu/m/arboretum/about.asp?e=" + entity.id;
 
 }

@@ -129,6 +129,47 @@
         #popup-close-button {
           font-size: 1rem;
         }
+        @media screen and (max-width: 700px) {
+          #imageLeft {
+          width: 100%;
+          }
+          #imageRight {
+            float: right;
+            width: 0%;
+            display: none;
+          }
+        }
+        @media screen and (min-width: 701px) {
+          #tree-image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+          }
+          
+          #imageLeft {
+          width: 50%;
+          justify-self: right;
+          display: flex;
+          justify-content: center;
+          }
+          #imageRight {
+            float: right;
+            width: 50%;
+            height: 100%;
+
+          }
+
+        }
+        #tree-image {
+          max-width: 100%;
+       
+        }
+        #imageLeft {
+          display: flex;
+          justify-content: center;
+        }
+
       
     </style>
   </head>
@@ -172,9 +213,16 @@
           </div>
         </div>
         <div id="tree-image-container">
-          <a href=""><img id="tree-image" src="temp" alt="Tree Image" style="max-width: 100%; height: auto;" /></a>
-          <p style="align-items: center; padding-bottom: 10px;">For more info. Click the Image</p>
+          <div id="imageLeft">
+              <a href=""><img id="tree-image" src="temp" alt="Tree Image"/></a>
+          </div>
+          <div id="imageRight">
+            <p>
+            </p>
+          </div>
         </div>
+        <p style="align-items: center; padding-bottom: 10px;">For more info. Click the Image</p>
+
       </div>
     </div>
     <!-- Dropdown Menu on the Right -->
