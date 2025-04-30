@@ -11,6 +11,7 @@ function initializeMap() {
     return map;
 }
 
+let markers = [];
 async function updateMapFromAPI(themeId) {
     try {
         // Fetch data from the proxy server
@@ -24,7 +25,7 @@ async function updateMapFromAPI(themeId) {
         const entity = deserializeEntities(text);
 
         // Update the map with the new coordinates
-        updateMap(entity);
+        markers = updateMap(entity, "trees-svgrepo-com.svg", markers);
     } catch (error) {
         console.error('Error fetching data:', error);
         document.getElementById("api-text").textContent = "Failed to load data.";
@@ -71,7 +72,8 @@ function determineIcon(entity) {
     }
     return "trees-svgrepo-com"
 }
-async function updateMap(entities, iconType) {
+
+function updateMap(entities, iconType, markers) {
     // Initialize the map and set its view to the first coordinate
 
     // Add OpenStreetMap tiles
@@ -81,11 +83,17 @@ async function updateMap(entities, iconType) {
 
     // Define a custom tree icon
     var treeIcon = L.icon({
-        iconUrl: 'images/trees-svgrepo-com.svg',
+        iconUrl: `images/${iconType}`,
         iconSize: [32, 32], // Size of the icon
         iconAnchor: [16, 32] // Anchor point of the icon
     });
 
+    markers.forEach(entity => {
+        map.removeLayer(entity);
+    });
+
+
+    let new_markers = [];
     // Add markers for each coordinate
     entities.forEach(entity => {
         if (entity.location.trim() == "") return;
@@ -93,10 +101,12 @@ async function updateMap(entities, iconType) {
         for (const loc of locs) {
             let marker = L.marker([loc.Lat, loc.Lng], { icon: treeIcon });
             marker.on('click', (_) => setTreeInfo(entity));
-            marker.addTo(map);
+            new_markers.push(marker);
+            map.addLayer(marker);
             marker.icon = "images/" + iconType
         }
     });
+    return new_markers;
 }
 
 async function setTreeInfo(entity) {
