@@ -12,6 +12,16 @@ function initializeMap() {
 }
 
 let markers = [];
+
+const themeIdLookup = {
+    "1": "trees-svgrepo-com.svg",
+    "4": "grass-svgrepo-com.svg",
+    "24": "flower-svgrepo-com.svg",
+    "19": "butterflies-4-svgrepo-com.svg",
+    "20": "bird-svgrepo-com.svg",
+    "default": "trees-svgrepo-com.svg",
+};
+
 async function updateMapFromAPI(themeId) {
     try {
         // Fetch data from the proxy server
@@ -25,7 +35,7 @@ async function updateMapFromAPI(themeId) {
         const entity = deserializeEntities(text);
 
         // Update the map with the new coordinates
-        markers = updateMap(entity, "trees-svgrepo-com.svg", markers);
+        markers = updateMap(entity, themeIdLookup[themeId] ?? themeIdLookup.default, markers);
     } catch (error) {
         console.error('Error fetching data:', error);
         document.getElementById("api-text").textContent = "Failed to load data.";
@@ -52,26 +62,6 @@ function deserializeEntities(text) {
     return entities;
 }
 
-//we cant do this without making A LOT if api calls to the arboretum (1 call per icon, some tours have 100+)
-//I don't want to make the WSU IT team/arbortum mad, so this is what we would do if able
-function determineIcon(entity) {
-    console.log(entity)
-    for (let i = 0; i < entity.length; i++) {
-
-        const attributeName = entity[i].getElementsByTagName('AttributeName')[i].textContent;
-        //check for unique attributes in each entity, if match, return icon path
-        if (attributeName === 'Bark') {
-            return "trees-svgrepo-com"
-        }
-        else if (attributeName === 'Attracts Birds') {
-            return "grass-svgrepo-com"
-        }
-        else if (attributeName === 'Sun Exposure') {
-            return "flower-svgrepo-com"
-        }
-    }
-    return "trees-svgrepo-com"
-}
 
 function updateMap(entities, iconType, markers) {
     // Initialize the map and set its view to the first coordinate
@@ -103,7 +93,6 @@ function updateMap(entities, iconType, markers) {
             marker.on('click', (_) => setTreeInfo(entity));
             new_markers.push(marker);
             map.addLayer(marker);
-            marker.icon = "images/" + iconType
         }
     });
     return new_markers;
